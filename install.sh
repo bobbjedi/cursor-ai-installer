@@ -1,14 +1,26 @@
 #!/bin/bash
 
-# Remove old versions
-sudo rm -f /opt/cursor.AppImage
-sudo rm -f /usr/share/applications/cursor.desktop
-sudo rm -f /opt/cursor.png
+TEMP_APPIMAGE="/tmp/cursor.AppImage"
+
+sudo rm -f $TEMP_APPIMAGE
 
 # Download latest version
 echo "🔄 Downloading Cursor..."
 URL=$(wget -qO- "https://www.cursor.com/api/download?platform=linux-x64&releaseTrack=stable" | grep -oP '"downloadUrl":\s*"\K[^"]+')
-wget -O /tmp/cursor.AppImage "$URL"
+wget -O wget -O "$TEMP_APPIMAGE" "$URL"
+
+
+# Verify download was successful
+if [ ! -f "$TEMP_APPIMAGE" ]; then
+    echo "❌ Download failed! Aborting installation."
+    exit 1
+fi
+
+
+# Remove old versions
+sudo rm -f /opt/cursor.AppImage
+sudo rm -f /usr/share/applications/cursor.desktop
+sudo rm -f /opt/cursor.png
 
 # Install AppImage
 echo "📦 Installing Cursor..."
