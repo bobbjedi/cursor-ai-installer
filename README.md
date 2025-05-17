@@ -21,8 +21,8 @@ cd cursor-ai-installer
 ```
 2. Run the installer
 ```bash
-chmod +x install.sh
-sudo ./install.sh
+chmod +x install_or_update.sh
+sudo ./install_or_update.sh
 ```
 
 ## Usage
