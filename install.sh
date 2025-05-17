@@ -1,25 +1,25 @@
 #!/bin/bash
 
-# Удаляем старые версии
+# Remove old versions
 sudo rm -f /opt/cursor.AppImage
 sudo rm -f /usr/share/applications/cursor.desktop
 sudo rm -f /opt/cursor.png
 
-# Скачиваем последнюю версию
+# Download latest version
 echo "🔄 Downloading Cursor..."
 URL=$(wget -qO- "https://www.cursor.com/api/download?platform=linux-x64&releaseTrack=stable" | grep -oP '"downloadUrl":\s*"\K[^"]+')
 wget -O /tmp/cursor.AppImage "$URL"
 
-# Устанавливаем AppImage
+# Install AppImage
 echo "📦 Installing Cursor..."
 sudo mv /tmp/cursor.AppImage /opt/cursor.AppImage
 sudo chmod +x /opt/cursor.AppImage
 
-# Скачиваем иконку
-echo "🎨 Downloading icon..."
-sudo wget -O /opt/cursor.png https://cursor.so/favicon.ico
+# Copy icon from repository
+echo "🎨 Copying icon from repository..."
+sudo cp cursor-logo.png /opt/cursor.png
 
-# Создаем desktop-файл с исправленными параметрами
+# Create desktop file with corrected parameters
 echo "📝 Creating application entry..."
 cat <<EOF | sudo tee /usr/share/applications/cursor.desktop > /dev/null
 [Desktop Entry]
@@ -37,12 +37,12 @@ X-AppImage-Version=1.0
 MimeType=text/plain;text/x-chdr;text/x-csrc;text/x-c++hdr;text/x-c++src;
 EOF
 
-# Обновляем кэш
+# Update cache
 echo "♻️ Updating application database..."
 sudo update-desktop-database
 sudo chmod 644 /usr/share/applications/cursor.desktop
 
-# Создаем симлинк для запуска из терминала
+# Create symlink for terminal launch
 sudo ln -sf /opt/cursor.AppImage /usr/local/bin/cursor
 
 echo -e "\n✅ \033[1;32mInstallation complete!\033[0m"
