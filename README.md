@@ -2,7 +2,7 @@
 
 ![Cursor AI Logo](https://cursor.so/favicon.ico)
 
-A one-command installer for Cursor AI code editor on Linux systems. Automates the download, installation, and desktop integration of the latest Cursor AppImage.
+A one-command installer for the Cursor AI code editor on Linux systems. Automatically downloads the latest stable AppImage release, verifies its integrity, installs it system-wide, sets up a desktop launcher with an icon, and creates a terminal command alias. Ensures seamless updates and desktop integration for an AI-powered coding experience.
 
 ## Features
 
