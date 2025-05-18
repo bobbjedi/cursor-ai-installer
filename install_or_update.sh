@@ -10,12 +10,30 @@ URL=$(wget -qO- "https://www.cursor.com/api/download?platform=linux-x64&releaseT
 wget -O wget -O "$TEMP_APPIMAGE" "$URL"
 
 
-# Verify download was successful
+# Verify the downloaded file
 if [ ! -f "$TEMP_APPIMAGE" ]; then
-    echo "❌ Download failed! Aborting installation."
+    echo "❌ Download failed! Installation aborted."
     exit 1
 fi
 
+# Check if file is ELF executable
+if ! file "$TEMP_APPIMAGE" | grep -q "ELF"; then
+    echo "❌ Downloaded file is not a valid AppImage (not ELF executable)!"
+    rm -f "$TEMP_APPIMAGE"
+    exit 1
+fi
+
+# Verify minimum file size (100MB)
+FILE_SIZE=$(stat -c%s "$TEMP_APPIMAGE")
+MIN_SIZE=$((100*1024*1024))  # 100 MB in bytes
+
+if [ "$FILE_SIZE" -lt "$MIN_SIZE" ]; then
+    echo "❌ Downloaded file is too small (${FILE_SIZE} bytes), likely incomplete!"
+    rm -f "$TEMP_APPIMAGE"
+    exit 1
+fi
+
+echo "✅ File verified: $((FILE_SIZE/1024/1024)) MB, ELF executable"
 
 # Remove old versions
 sudo rm -f /opt/cursor.AppImage
@@ -24,7 +42,7 @@ sudo rm -f /opt/cursor.png
 
 # Install AppImage
 echo "📦 Installing Cursor..."
-sudo mv /tmp/cursor.AppImage /opt/cursor.AppImage
+sudo mv $TEMP_APPIMAGE /opt/cursor.AppImage
 sudo chmod +x /opt/cursor.AppImage
 
 # Copy icon from repository
